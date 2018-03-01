@@ -1,0 +1,4 @@
+Primeira linha arquivo 1
+Segunda linha
+Terceira linha
+Quarta
