@@ -6,7 +6,7 @@
 /*   By: adubugra <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/28 14:11:43 by adubugra          #+#    #+#             */
-/*   Updated: 2018/02/28 23:31:40 by adubugra         ###   ########.fr       */
+/*   Updated: 2018/03/01 11:10:27 by adubugra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 }*/
 
 
-static int		get_file_len(int fd, char **file_conten)
+static int		set_file_content(int fd, char **file_conten)
 {
 	int		i;
 	char	*tmp;
@@ -40,16 +40,16 @@ static int		get_file_len(int fd, char **file_conten)
 		i++;
 		tmp = ft_strnew(i);
 		ft_strncpy(tmp, file_content, i + 1);
-		ft_strdel(&file_content);
+		free(file_content);
 		file_content = ft_strnew(i + 1);
 		ft_strncpy(file_content, tmp, i + 1);
-		ft_strdel(&tmp);
+		free(tmp);
 	}
 	*file_conten = file_content;
 	return (i);
 }
 
-static char	*get_line(t_gnl *current_file)
+char	*get_line(t_gnl *current_file)
 {
 	int i;
 	int tmp;
@@ -61,11 +61,10 @@ static char	*get_line(t_gnl *current_file)
 		return (0);
 	tmp = current_file->i;
 	current_file->i += i + 1;
-	printf("%s, i:%d\n", ft_strsub(current_file->file_content, tmp, i), current_file->i);
 	return (ft_strsub(current_file->file_content, tmp, i));
 }
 
-static t_gnl	*find_or_create_file_struct(int fd, t_gnl **file_list)
+t_gnl	*find_or_create_file_struct(int fd, t_gnl **file_list)
 {
 	t_gnl	*helper;
 
@@ -78,7 +77,7 @@ static t_gnl	*find_or_create_file_struct(int fd, t_gnl **file_list)
 	}
 	helper = malloc(sizeof(t_gnl));
 	helper->fd = fd;
-	helper->count = get_file_len(helper->fd, &helper->file_content);
+	helper->count = set_file_content(helper->fd, &helper->file_content);
 	helper->i = 0;
 	helper->nl = 0;
 	helper->next = NULL;
@@ -94,21 +93,35 @@ int		get_next_line(const int fd, char **line)
 {
 	static t_gnl	*file_list;
 	t_gnl			current_file;
+	char			*tmp;
 
-	line = 0;
-	current_file = *find_or_create_file_struct(fd, &file_list);
-	get_line(file_list);
+	if (fd == -1)
+		return (-1);
+	current_file = *(find_or_create_file_struct(fd, &file_list));
+	tmp = get_line(file_list);
+	if((*line = tmp) == 0)
+		return (0);
+	else 
+		return (1);
+	//ft_strncpy(*line, tmp, ft_strlen(tmp));
+
 	return (0);
 }
 
 int main()
 {
-	char *printing_line;
+	char *printing_line = NULL;
+	
 	get_next_line(open("test.txt", O_RDONLY), &printing_line);
+	printf("1: %s\n", printing_line);
 	get_next_line(open("test.txt", O_RDONLY), &printing_line);
-	//get_next_line(open("test.txt", O_RDONLY), &printing_line);
-	//get_next_line(open("test.txt", O_RDONLY), &printing_line);
-	//get_next_line(open("test.txt", O_RDONLY), &printing_line);
+	printf("2: %s\n", printing_line);
+	get_next_line(open("test.txt", O_RDONLY), &printing_line);
+	printf("3: %s\n", printing_line);
+	get_next_line(open("test.txt", O_RDONLY), &printing_line);
+	printf("4: %s\n", printing_line);
+	get_next_line(open("test.txt", O_RDONLY), &printing_line);
+	printf("5:%s\n", printing_line);
 	//get_next_line(open("test2.txt", O_RDONLY), &printing_line);
 	//get_next_line(open("test3.txt", O_RDONLY), &printing_line);
 	//printf("%s\n",printing_line);
