@@ -6,7 +6,7 @@
 /*   By: adubugra <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/28 14:11:43 by adubugra          #+#    #+#             */
-/*   Updated: 2018/03/01 11:10:27 by adubugra         ###   ########.fr       */
+/*   Updated: 2018/03/01 11:34:29 by adubugra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,13 +92,13 @@ t_gnl	*find_or_create_file_struct(int fd, t_gnl **file_list)
 int		get_next_line(const int fd, char **line)
 {
 	static t_gnl	*file_list;
-	t_gnl			current_file;
+	t_gnl			*current_file;
 	char			*tmp;
 
 	if (fd == -1)
 		return (-1);
-	current_file = *(find_or_create_file_struct(fd, &file_list));
-	tmp = get_line(file_list);
+	current_file = find_or_create_file_struct(fd, &file_list);
+	tmp = get_line(current_file);
 	if((*line = tmp) == 0)
 		return (0);
 	else 
@@ -111,19 +111,26 @@ int		get_next_line(const int fd, char **line)
 int main()
 {
 	char *printing_line = NULL;
-	
-	get_next_line(open("test.txt", O_RDONLY), &printing_line);
+	int f2;
+	int fd;
+
+	fd = open("test.txt", O_RDONLY);	
+	f2 = open("test2.txt", O_RDONLY);	
+	get_next_line(fd, &printing_line);
 	printf("1: %s\n", printing_line);
-	get_next_line(open("test.txt", O_RDONLY), &printing_line);
+	get_next_line(fd, &printing_line);
 	printf("2: %s\n", printing_line);
-	get_next_line(open("test.txt", O_RDONLY), &printing_line);
+	get_next_line(f2, &printing_line);
+	printf("1: %s\n", printing_line);
+	get_next_line(fd, &printing_line);
 	printf("3: %s\n", printing_line);
-	get_next_line(open("test.txt", O_RDONLY), &printing_line);
-	printf("4: %s\n", printing_line);
-	get_next_line(open("test.txt", O_RDONLY), &printing_line);
-	printf("5:%s\n", printing_line);
+	//get_next_line(open("test.txt", O_RDONLY), &printing_line);
+	//printf("4: %s\n", printing_line);
 	//get_next_line(open("test2.txt", O_RDONLY), &printing_line);
+	//printf("1:%s\n", printing_line);
+	//get_next_line(open("test.txt", O_RDONLY), &printing_line);
+	//printf("5:%s\n", printing_line);
 	//get_next_line(open("test3.txt", O_RDONLY), &printing_line);
-	//printf("%s\n",printing_line);
+	//printf("1:%s\n", printing_line);
 	return (0);
 }
