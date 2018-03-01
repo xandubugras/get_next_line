@@ -1,30 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adubugra <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/28 18:37:12 by adubugra          #+#    #+#             */
-/*   Updated: 2018/03/01 11:51:23 by adubugra         ###   ########.fr       */
+/*   Created: 2018/02/21 16:45:52 by adubugra          #+#    #+#             */
+/*   Updated: 2018/02/21 16:45:55 by adubugra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# include "libft.h"
-# define BUFF_SIZE 4096
+#include <libft.h>
 
-typedef struct		s_gnl
+void	*ft_memmove(void *dst, const void *src, size_t len)
 {
-	char			*file_content;
-	int				count;
-	int				i;
-	int				nl;
-	int				fd;
-	struct s_gnl	*next;
-}					t_gnl;
+	char	*srcc;
+	char	*dstc;
+	size_t	i;
 
-int					get_next_line(int const fd, char **line);
-
-#endif
+	i = 0;
+	srcc = (char *)src;
+	dstc = (char *)dst;
+	if (srcc < dstc)
+	{
+		while (len > 0)
+		{
+			len--;
+			dstc[len] = srcc[len];
+		}
+	}
+	else
+	{
+		while (i < len)
+		{
+			dstc[i] = srcc[i];
+			i++;
+		}
+	}
+	return (dst);
+}

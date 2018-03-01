@@ -1,30 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adubugra <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/02/28 18:37:12 by adubugra          #+#    #+#             */
-/*   Updated: 2018/03/01 11:51:23 by adubugra         ###   ########.fr       */
+/*   Created: 2018/02/22 15:51:57 by adubugra          #+#    #+#             */
+/*   Updated: 2018/02/23 20:41:52 by adubugra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# include "libft.h"
-# define BUFF_SIZE 4096
+#include <libft.h>
 
-typedef struct		s_gnl
+char	*ft_strnew(size_t size)
 {
-	char			*file_content;
-	int				count;
-	int				i;
-	int				nl;
-	int				fd;
-	struct s_gnl	*next;
-}					t_gnl;
+	char	*str;
+	int		i;
 
-int					get_next_line(int const fd, char **line);
-
-#endif
+	str = (char *)malloc(sizeof(char) * size + 1);
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (str[i])
+	{
+		str[i] = 0;
+		i++;
+	}
+	str[size] = '\0';
+	return (str);
+}

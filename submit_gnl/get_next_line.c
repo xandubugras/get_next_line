@@ -6,14 +6,24 @@
 /*   By: adubugra <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/28 14:11:43 by adubugra          #+#    #+#             */
-/*   Updated: 2018/03/01 11:59:36 by adubugra         ###   ########.fr       */
+/*   Updated: 2018/03/01 11:45:38 by adubugra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <unistd.h>
 #include <fcntl.h>
-#define F_C_II file_content[current_file->i + i]
+
+/*
+{
+	- check if there is the new fd is different from the old;
+	- if not allocate and initialize
+	- read the whole memory into the content
+	- find the current line
+	- copy line into the "line" argument
+	- return if there are errors
+}*/
+
 
 static int		set_file_content(int fd, char **file_conten)
 {
@@ -23,6 +33,7 @@ static int		set_file_content(int fd, char **file_conten)
 
 	i = 0;
 	file_content = *file_conten;
+	//file_content = malloc(sizeof(char) * 2);
 	file_content = ft_strnew(1);
 	while (read(fd, &file_content[i], 1) == 1)
 	{
@@ -38,13 +49,13 @@ static int		set_file_content(int fd, char **file_conten)
 	return (i);
 }
 
-static char		*get_line(t_gnl *current_file)
+char	*get_line(t_gnl *current_file)
 {
 	int i;
 	int tmp;
 
 	i = 0;
-	while (current_file->F_C_II != '\n' && current_file->F_C_II != '\0')
+	while (current_file->file_content[current_file->i + i] != '\n' && current_file->file_content[current_file->i + i] != '\0')
 		i++;
 	if (current_file->file_content[current_file->i + i] == '\0')
 		return (0);
@@ -53,7 +64,7 @@ static char		*get_line(t_gnl *current_file)
 	return (ft_strsub(current_file->file_content, tmp, i));
 }
 
-static t_gnl	*find_or_create_file_struct(int fd, t_gnl **file_list)
+t_gnl	*find_or_create_file_struct(int fd, t_gnl **file_list)
 {
 	t_gnl	*helper;
 
@@ -77,7 +88,8 @@ static t_gnl	*find_or_create_file_struct(int fd, t_gnl **file_list)
 	return (helper);
 }
 
-int				get_next_line(const int fd, char **line)
+
+int		get_next_line(const int fd, char **line)
 {
 	static t_gnl	*file_list;
 	t_gnl			*current_file;
@@ -87,28 +99,11 @@ int				get_next_line(const int fd, char **line)
 		return (-1);
 	current_file = find_or_create_file_struct(fd, &file_list);
 	tmp = get_line(current_file);
-	if ((*line = tmp) == 0)
+	if((*line = tmp) == 0)
 		return (0);
-	else
+	else 
 		return (1);
-	return (0);
-}
+	//ft_strncpy(*line, tmp, ft_strlen(tmp));
 
-int			main()
-{
-	char *printing_line = NULL;
-	int f2;
-	int fd;
-
-	fd = open("test.txt", O_RDONLY);
-	f2 = open("test2.txt", O_RDONLY);
-	get_next_line(fd, &printing_line);
-	printf("1: %s\n", printing_line);
-	get_next_line(fd, &printing_line);
-	printf("2: %s\n", printing_line);
-	get_next_line(f2, &printing_line);
-	printf("1: %s\n", printing_line);
-	get_next_line(fd, &printing_line);
-	printf("3: %s\n", printing_line);
 	return (0);
 }
